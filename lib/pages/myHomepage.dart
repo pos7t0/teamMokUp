@@ -15,57 +15,52 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+int _selectedIndex = 0; // Índice seleccionado para las páginas
 
+
+  // Lista de las páginas que quieres mostrar
+  static const List<Widget> _pages = <Widget>[
+    recetas(title: 'Recetas',color:Color.fromARGB(255, 181, 130, 111)),
+    favoritos(title: 'Favoritos',color: Color.fromARGB(255, 255, 138, 130)),
+    tienda(title: 'Tienda', color: Color.fromARGB(255, 255, 246, 165)),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+      
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Card de Recetas
-              button(Icons.menu_book, 'Recetas', const recetas(title: 'Recetas')),
-              const SizedBox(height: 20),
-              // Card de Favoritos
-              button(Icons.favorite, 'Favoritos', const favoritos(title: 'Favoritos')),
-              
-              const SizedBox(height: 20),
-              // Card de Tienda
-              button(Icons.shopping_cart, 'Tienda', const tienda(title: 'Tienda')),
-              
-            ],
-          ),
-        ),
+        child: _pages[_selectedIndex], // Mostrar la página seleccionada
       ),
-    );
-  }
-  GestureDetector button(IconData icon,String text,StatefulWidget state){
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => state),
-        );
-      },
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20), // Bordes redondeados
-        ),
-        elevation: 4, // Sombra de la card
-        child: ListTile(
-          leading:  Icon(icon, size: 40), // Icono de recetas
-          title:  Text(
-            text,
-            style: TextStyle(fontSize: 24),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.shifting, // Cambiar el tipo a shifting
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+
+            label: 'Recetas',
+            backgroundColor: Color.fromARGB(255, 181, 130, 111),
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favoritos',
+            backgroundColor: Color.fromARGB(255, 255, 138, 130),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Tienda',
+            backgroundColor: Color.fromARGB(255, 255, 246, 165),
+          ),
+        ],
+        currentIndex: _selectedIndex, // Página seleccionada
+        selectedItemColor: Colors.black, // Color del ítem seleccionado
+        onTap: _onItemTapped, // Cambiar la página al tocar un ítem
       ),
     );
   }

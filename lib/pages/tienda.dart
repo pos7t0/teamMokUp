@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class tienda extends StatefulWidget {
-  const tienda({super.key, required this.title});
+  const tienda({super.key, required this.title,required this.color});
 
   final String title;
+  final Color color;
 
   @override
   State<tienda> createState() => _tiendaState();
@@ -16,7 +17,7 @@ class _tiendaState extends State<tienda> {
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: widget.color,
         title: Text(widget.title),
       )
     );
