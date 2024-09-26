@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'Second.dart';
+import 'package:team_mokup/pages/favoritos.dart';
+import 'package:team_mokup/pages/recetas.dart';
+import 'package:team_mokup/pages/tienda.dart';
+
 
 
 class MyHomePage extends StatefulWidget {
@@ -12,20 +15,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _navigateToSecondPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SecondPage()),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,28 +25,49 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            ElevatedButton(
-              onPressed: _navigateToSecondPage,
-              child: const Text('Go to Second Page'),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Card de Recetas
+              button(Icons.menu_book, 'Recetas', const recetas(title: 'Recetas')),
+              const SizedBox(height: 20),
+              // Card de Favoritos
+              button(Icons.favorite, 'Favoritos', const favoritos(title: 'Favoritos')),
+              
+              const SizedBox(height: 20),
+              // Card de Tienda
+              button(Icons.shopping_cart, 'Tienda', const tienda(title: 'Tienda')),
+              
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    );
+  }
+  GestureDetector button(IconData icon,String text,StatefulWidget state){
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => state),
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20), // Bordes redondeados
+        ),
+        elevation: 4, // Sombra de la card
+        child: ListTile(
+          leading:  Icon(icon, size: 40), // Icono de recetas
+          title:  Text(
+            text,
+            style: TextStyle(fontSize: 24),
+          ),
+        ),
       ),
     );
   }
 }
+
