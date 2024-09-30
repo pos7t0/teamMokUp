@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-class tienda extends StatefulWidget {
-  const tienda({super.key, required this.title,required this.color});
+class tiendaWeb extends StatefulWidget {
+  const tiendaWeb({super.key, required this.title,required this.color});
 
   final String title;
   final Color color;
 
   @override
-  State<tienda> createState() => _tiendaState();
+  State<tiendaWeb> createState() => _tiendaWebState();
 }
 
-class _tiendaState extends State<tienda> {
+class _tiendaWebState extends State<tiendaWeb> {
 
 
   @override

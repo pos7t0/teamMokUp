@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
-import 'pages/splashScreen.dart';
+import 'package:team_mokup/models/usuario.dart';
+import 'package:team_mokup/pages/activateAccount.dart';
+
 
 void main() {
+  Usuario.instance.inicializarUsuario(
+    nombre: 'Juan Perez',
+    correo: 'juan@example.com',
+    contrasena: '12345',
+    recetas: [], // Lista de recetas inicial
+    favoritos: [], // Lista de favoritos inicial
+  );
+  
   runApp(const MyApp());
 }
 
@@ -17,7 +27,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      home: const ActivateAccount(),
     );
   }
 }
