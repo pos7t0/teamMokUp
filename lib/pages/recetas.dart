@@ -17,29 +17,29 @@ class _recetasWebState extends State<recetasWeb> {
   // Lista de recetas originales y lista filtrada
   final List<Receta> recetasOriginales = [
     Receta(
-      nombre: 'Tacos',
-      ingredientes: 'Tortillas, Carne, Salsa',
-      preparacion: 'Calentar tortillas, añadir carne y salsa.',
-      listaCalificaciones: [4.0, 4.5, 5.0],
-      favorito: false,
-      calificacionUsuario: 0,
-    ),
-    Receta(
-      nombre: 'Pizza',
-      ingredientes: 'Masa, Queso, Tomate, Pepperoni',
-      preparacion: 'Hornear la masa con los ingredientes.',
-      listaCalificaciones: [4.5, 4.7],
-      favorito: false,
-      calificacionUsuario: 0,
-    ),
-    Receta(
-      nombre: 'Hamburguesa',
-      ingredientes: 'Pan, Carne, Queso, Lechuga, Tomate',
-      preparacion: 'Cocinar la carne y armar la hamburguesa.',
-      listaCalificaciones: [4.8],
-      favorito: false,
-      calificacionUsuario: 0,
-    ),
+  nombre: 'Café Espresso',
+  ingredientes: 'Café molido fino, Agua',
+  preparacion: 'Utiliza una máquina de espresso para extraer el café con agua caliente a alta presión durante 25-30 segundos.',
+  listaCalificaciones: [4.9, 5.0, 4.8],
+  favorito: false,
+  calificacionUsuario: 0,
+),
+Receta(
+  nombre: 'Café Americano',
+  ingredientes: 'Café espresso, Agua caliente',
+  preparacion: 'Prepara un espresso y añade agua caliente para diluir, creando una bebida más suave.',
+  listaCalificaciones: [4.7, 4.5],
+  favorito: false,
+  calificacionUsuario: 0,
+),
+Receta(
+  nombre: 'Café Cold Brew',
+  ingredientes: 'Café molido grueso, Agua fría',
+  preparacion: 'Mezcla el café con agua fría y déjalo reposar en el refrigerador durante 12-24 horas. Luego filtra el café y sirve con hielo.',
+  listaCalificaciones: [4.6, 4.8],
+  favorito: false,
+  calificacionUsuario: 0,
+),
   ];
 
   List<Receta> recetasFiltradas = [];
@@ -176,20 +176,37 @@ class _recetasWebState extends State<recetasWeb> {
                                       // Implementar la lógica para compartir
                                     },
                                   ),
+                                  // Mostrar botón de favorito solo para las recetas originales
+                                  if (recetasOriginales.contains(receta))
+                                    IconButton(
+                                      icon: Icon(
+                                        receta.favorito ? Icons.favorite : Icons.favorite_border,
+                                        color: receta.favorito ? Colors.red : null,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          receta.favorito = !receta.favorito;
+                                          // Añadir o remover de favoritos en el singleton
+                                          if (receta.favorito) {
+                                            usuario.agregarFavorito(receta);
+                                          } else {
+                                            usuario.removerFavorito(receta);
+                                          }
+                                        });
+                                      },
+                                    ),
                                   // Mostrar botón de editar solo para recetas del usuario
                                   if (!recetasOriginales.contains(receta))
                                     IconButton(
                                       icon: const Icon(Icons.edit),
                                       onPressed: () async {
-                                        // Navegar a la página de crear/editar receta
                                         final recetaEditada = await Navigator.push<Receta>(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => CrearReceta(receta: receta), // Pasar la receta a editar
+                                            builder: (context) => CrearReceta(receta: receta),
                                           ),
                                         );
-
-                                        // Actualizar la receta en el singleton y la vista
+                              
                                         if (recetaEditada != null) {
                                           setState(() {
                                             usuario.editarReceta(recetaEditada);

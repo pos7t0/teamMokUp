@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:team_mokup/models/usuario.dart';
 import 'package:team_mokup/pages/activateAccount.dart';
 import 'package:team_mokup/pages/editarPerfil.dart';
+import 'package:team_mokup/pages/misRecetas.dart';
+import 'package:team_mokup/pages/misComentarios.dart'; // Importa la página de comentarios
 
 class MyAccount extends StatefulWidget {
   const MyAccount({super.key, required this.title, required this.color});
@@ -78,7 +80,23 @@ class _MyAccountState extends State<MyAccount> {
               title: const Text('Mis Recetas'),
               subtitle: const Text('Ver todas las recetas que has creado'),
               onTap: () {
-                // Navega a la lista de recetas del usuario
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MisRecetas()),
+                );
+              },
+            ),
+            const Divider(),
+            // Sección de Mis Comentarios
+            ListTile(
+              leading: const Icon(Icons.comment),
+              title: const Text('Mis Comentarios'),
+              subtitle: const Text('Ver todos los comentarios que has realizado'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MisComentarios()), // Navega a la pantalla de comentarios
+                );
               },
             ),
             const Divider(),

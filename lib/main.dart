@@ -10,6 +10,7 @@ void main() {
     contrasena: '12345',
     recetas: [], // Lista de recetas inicial
     favoritos: [], // Lista de favoritos inicial
+    comentarios:[]
   );
   
   runApp(const MyApp());

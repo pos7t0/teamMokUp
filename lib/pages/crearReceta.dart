@@ -63,19 +63,7 @@ class _CrearRecetaState extends State<CrearReceta> {
               controller: _preparacionController,
               decoration: const InputDecoration(labelText: 'Preparación'),
             ),
-            Row(
-              children: [
-                const Text('Favorito'),
-                Switch(
-                  value: _favorito,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _favorito = value;
-                    });
-                  },
-                ),
-              ],
-            ),
+            
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _guardarReceta,
