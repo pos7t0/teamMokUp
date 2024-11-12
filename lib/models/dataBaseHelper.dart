@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:team_mokup/models/receta.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._();
@@ -26,8 +27,9 @@ class DatabaseHelper {
             nombre TEXT,
             ingredientes TEXT,
             preparacion TEXT,
-            favorito INTEGER,
-            calificacionUsuario REAL,
+            productosAsociados TEXT,
+            isMine INTEGER,
+            conteo INTEGER DEFAULT 0,
             imagen TEXT
           )
         ''');
@@ -35,13 +37,12 @@ class DatabaseHelper {
       version: 1,
     );
   }
-  
 
-  // Ejemplo de método para insertar una receta
-  Future<int> insertReceta(Map<String, dynamic> receta) async {
+  // Método para insertar una receta en la base de datos
+  Future<int> insertReceta(Receta receta) async {
     final db = await database;
-    return await db.insert('recetas', receta);
+    return await db.insert('recetas', receta.toMap());
   }
 
-  // Otros métodos CRUD (consulta, actualización, eliminación) se agregarán aquí
+  
 }

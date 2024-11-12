@@ -1,0 +1,38 @@
+[
+    {
+      "nombre": "Café Espresso",
+      "ingredientes": "Café molido fino, Agua",
+      "preparacion": "Utiliza una máquina de espresso para extraer el café con agua caliente a alta presión.",
+      "productosAsociados": "Café molido",
+      "isMine": false,
+      "conteo": 5,
+      "imagen": "assets/image/descarga.png"
+    },
+    {
+      "nombre": "Café Latte",
+      "ingredientes": "Café, Leche",
+      "preparacion": "Calentar leche y mezclar con espresso.",
+      "productosAsociados": "Leche, Café",
+      "isMine": false,
+      "conteo": 3,
+      "imagen": "assets/image/descarga2.png"
+    },
+    {
+      "nombre": "Café Espresso",
+      "ingredientes": "Café molido fino, Agua",
+      "preparacion": "Utiliza una máquina de espresso para extraer el café con agua caliente a alta presión.",
+      "productosAsociados": "Café molido",
+      "isMine": false,
+      "conteo": 5,
+      "imagen": "assets/image/descarga.png"
+    },
+    {
+      "nombre": "Café Latte",
+      "ingredientes": "Café, Leche",
+      "preparacion": "Calentar leche y mezclar con espresso.",
+      "productosAsociados": "Leche, Café",
+      "isMine": false,
+      "conteo": 3,
+      "imagen": "assets/image/descarga2.png"
+    }
+]

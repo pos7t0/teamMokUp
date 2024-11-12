@@ -21,6 +21,7 @@ class _recetasWebState extends State<recetasWeb> {
       preparacion: 'Utiliza una máquina de espresso para extraer el café con agua caliente a alta presión durante 25-30 segundos.',
       productosAsociados: '',
       isMine: false,
+      imagen: 'assets/image/descarga.png', // Ruta de la imagen
     ),
     Receta(
       nombre: 'Café Americano',
@@ -28,6 +29,7 @@ class _recetasWebState extends State<recetasWeb> {
       preparacion: 'Prepara un espresso y añade agua caliente para diluir, creando una bebida más suave.',
       productosAsociados: '',
       isMine: false,
+      imagen: 'assets/image/descarga2.png', // Ruta de la imagen
     ),
     Receta(
       nombre: 'Café Cold Brew',
@@ -35,6 +37,7 @@ class _recetasWebState extends State<recetasWeb> {
       preparacion: 'Mezcla el café con agua fría y déjalo reposar en el refrigerador durante 12-24 horas. Luego filtra el café y sirve con hielo.',
       productosAsociados: '',
       isMine: false,
+      imagen: 'assets/image/descarga.png', // Ruta de la imagen
     ),
   ];
 
@@ -90,6 +93,20 @@ class _recetasWebState extends State<recetasWeb> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Mostrar imagen de la receta
+                          receta.imagen != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.asset(
+                                    receta.imagen!,
+                                    height: 300,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover, // Ajusta la imagen para cubrir el espacio
+                                  ),
+                                )
+                              : const SizedBox(height: 150), // Si no tiene imagen, mostrar espacio vacío
+
+                          const SizedBox(height: 10),
                           // Nombre de la receta
                           Text(
                             receta.nombre,
@@ -119,7 +136,7 @@ class _recetasWebState extends State<recetasWeb> {
                                     },
                                   ),
                                   // Mostrar botón de editar solo para recetas del usuario
-                                  if (!recetasOriginales.contains(receta))
+                                  if (receta.isMine)
                                     IconButton(
                                       icon: const Icon(Icons.edit),
                                       onPressed: () async {
