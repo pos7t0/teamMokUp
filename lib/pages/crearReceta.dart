@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:team_mokup/models/receta.dart';
 
 class CrearReceta extends StatefulWidget {
-  final Receta? receta; // Añadir un parámetro opcional para editar
+  final Receta? receta; // Parámetro opcional para editar una receta
 
   const CrearReceta({super.key, this.receta}); // Constructor modificado
 
@@ -14,8 +14,11 @@ class _CrearRecetaState extends State<CrearReceta> {
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _ingredientesController = TextEditingController();
   final TextEditingController _preparacionController = TextEditingController();
+  final TextEditingController _productosAsociadosController = TextEditingController();
+  final TextEditingController _imagenController = TextEditingController();
+  final TextEditingController _conteoController = TextEditingController();
 
-  bool _favorito = false;
+  bool _isMine = false;
 
   @override
   void initState() {
@@ -25,18 +28,25 @@ class _CrearRecetaState extends State<CrearReceta> {
       _nombreController.text = widget.receta!.nombre;
       _ingredientesController.text = widget.receta!.ingredientes;
       _preparacionController.text = widget.receta!.preparacion;
-      _favorito = widget.receta!.favorito;
+      _productosAsociadosController.text = widget.receta!.productosAsociados;
+      _imagenController.text = widget.receta!.imagen ?? '';
+      _conteoController.text = widget.receta!.conteo.toString();
+      _isMine = widget.receta!.isMine;
     }
   }
 
   void _guardarReceta() {
+    // Convertir el conteo de texto a entero
+    final conteo = int.tryParse(_conteoController.text) ?? 0;
+
     final nuevaReceta = Receta(
       nombre: _nombreController.text,
       ingredientes: _ingredientesController.text,
       preparacion: _preparacionController.text,
-      listaCalificaciones: [],
-      favorito: _favorito,
-      calificacionUsuario: 0,
+      productosAsociados: _productosAsociadosController.text,
+      imagen: _imagenController.text.isNotEmpty ? _imagenController.text : null,
+      isMine: _isMine,
+      conteo: conteo,
     );
 
     // Devuelve la receta creada o editada a la pantalla anterior
@@ -63,7 +73,33 @@ class _CrearRecetaState extends State<CrearReceta> {
               controller: _preparacionController,
               decoration: const InputDecoration(labelText: 'Preparación'),
             ),
-            
+            TextField(
+              controller: _productosAsociadosController,
+              decoration: const InputDecoration(labelText: 'Productos Asociados'),
+            ),
+            TextField(
+              controller: _imagenController,
+              decoration: const InputDecoration(labelText: 'URL de la Imagen'),
+            ),
+            TextField(
+              controller: _conteoController,
+              decoration: const InputDecoration(labelText: 'Conteo'),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                const Text('Es mi receta'),
+                Checkbox(
+                  value: _isMine,
+                  onChanged: (value) {
+                    setState(() {
+                      _isMine = value ?? false;
+                    });
+                  },
+                ),
+              ],
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _guardarReceta,

@@ -1,88 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:team_mokup/pages/crearReceta.dart';
 import 'package:team_mokup/models/receta.dart';
-import 'package:team_mokup/models/usuario.dart';
-import 'package:team_mokup/pages/crearReceta.dart'; // Importar la página de creación/edición de recetas
 
 class MisRecetas extends StatefulWidget {
-  const MisRecetas({super.key});
+  const MisRecetas({super.key, required this.title, required this.color});
+  final String title;
+  final Color color;
 
   @override
   State<MisRecetas> createState() => _MisRecetasState();
 }
 
 class _MisRecetasState extends State<MisRecetas> {
+  List<Receta> misRecetas = [];
+
   @override
   Widget build(BuildContext context) {
-    final usuario = Usuario.instance; // Accedemos al singleton del usuario
-    final recetasUsuario = usuario.recetas; // Obtenemos las recetas del usuario
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Recetas'),
+        backgroundColor: widget.color,
+        title: Text(widget.title),
       ),
-      body: ListView.builder(
-        itemCount: recetasUsuario.length,
-        itemBuilder: (context, index) {
-          final receta = recetasUsuario[index];
-          return Card(
-            elevation: 4,
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    receta.nombre,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: misRecetas.isEmpty
+                  ? const Center(child: Text('No tienes recetas guardadas'))
+                  : ListView.builder(
+                      itemCount: misRecetas.length,
+                      itemBuilder: (context, index) {
+                        final receta = misRecetas[index];
+                        return Card(
+                          elevation: 4,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          child: ListTile(
+                            title: Text(receta.nombre),
+                            subtitle: Text(receta.ingredientes),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text('Ingredientes: ${receta.ingredientes}'),
-                  const SizedBox(height: 5),
-                  Text('Preparación: ${receta.preparacion}'),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      // Botón para compartir la receta
-                      IconButton(
-                        icon: const Icon(Icons.share),
-                        onPressed: () {
-                          // Implementar la lógica para compartir
-                        },
-                      ),
-                      // Botón para editar la receta
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () async {
-                          // Navegar a la página de crear/editar receta y esperar el resultado
-                          final recetaEditada = await Navigator.push<Receta>(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CrearReceta(receta: receta),
-                            ),
-                          );
-
-                          // Si se editó la receta, actualizarla en el singleton y en la lista
-                          if (recetaEditada != null) {
-                            setState(() {
-                              usuario.editarReceta(recetaEditada); // Actualiza en el singleton
-                            });
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
             ),
-          );
-        },
+            ElevatedButton(
+              onPressed: () async {
+                final nuevaReceta = await Navigator.push<Receta>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CrearReceta(),
+                  ),
+                );
+                
+                // Si se creó una nueva receta, agregarla a la lista y actualizar la vista
+                if (nuevaReceta != null) {
+                  setState(() {
+                    misRecetas.add(nuevaReceta);
+                  });
+                }
+              },
+              child: const Text('Crear nueva receta'),
+            ),
+          ],
+        ),
       ),
     );
   }

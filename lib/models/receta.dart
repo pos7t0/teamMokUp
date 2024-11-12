@@ -1,36 +1,34 @@
 class Receta {
+  int? id;
   String nombre;
   String ingredientes;
+  String? imagen;
   String preparacion;
-  List<double> listaCalificaciones;
-  bool favorito;
-  int calificacionUsuario; // Calificación seleccionada por el usuario
+  String productosAsociados;
+  bool isMine;
+  int conteo;
 
   Receta({
+    this.id,
     required this.nombre,
     required this.ingredientes,
+    this.imagen,
     required this.preparacion,
-    required this.listaCalificaciones,
-    required this.favorito,
-    required this.calificacionUsuario,
+    required this.productosAsociados,
+    required this.isMine,
+    this.conteo = 0,
   });
 
-  // Método para obtener el promedio de calificaciones
-  double get calificacionPromedio {
-    if (listaCalificaciones.isEmpty) {
-      return 0;
-    }
-    double suma = listaCalificaciones.reduce((a, b) => a + b);
-    if(calificacionUsuario!=0)
-    return (suma+calificacionUsuario) / (listaCalificaciones.length+1);
-    return (suma+calificacionUsuario) / (listaCalificaciones.length);
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'nombre': nombre,
+      'ingredientes': ingredientes,
+      'imagen': imagen,
+      'preparacion': preparacion,
+      'productosAsociados': productosAsociados,
+      'isMine': isMine ? 1 : 0, // Se almacena como 1 o 0 en la base de datos
+      'conteo': conteo,
+    };
   }
-  int get totalCalificaiones{
-
-    if(calificacionUsuario!=0)
-    return listaCalificaciones.length+1;
-    return listaCalificaciones.length;
-  }
-  
-
 }
