@@ -6,6 +6,7 @@ class Receta {
   String preparacion;
   String productosAsociados;
   bool isMine;
+  bool? inProduction;
   int conteo;
 
   Receta({
@@ -16,6 +17,7 @@ class Receta {
     required this.preparacion,
     required this.productosAsociados,
     required this.isMine,
+    this.inProduction,
     this.conteo = 0,
   });
 
@@ -28,6 +30,7 @@ class Receta {
       'preparacion': preparacion,
       'productosAsociados': productosAsociados,
       'isMine': isMine ? 1 : 0, // Se almacena como 1 o 0 en la base de datos
+      'inProduction': inProduction == true ? 1 : 0, // Se almacena como 1 o 0 en la base de datos
       'conteo': conteo,
     };
   }

@@ -1,6 +1,6 @@
 # team_mokup
 
-Este proyecto es una aplicación móvil desarrollada en Flutter para gestionar, crear, y explorar recetas de café. La aplicación está diseñada para proporcionar una experiencia fácil e intuitiva para aficionados al café y baristas, permitiéndoles interactuar con una comunidad que comparte y califica recetas.
+Este piloto es una aplicación móvil desarrollada en Flutter para gestionar, crear y explorar recetas de café, diseñada especialmente para aficionados al café y baristas. La aplicación proporciona una experiencia intuitiva y fácil de usar, permitiendo a los usuarios descubrir recetas, personalizarlas y crear las propias. Como parte del piloto, se ha incluido una sección de comentarios donde los usuarios pueden compartir sus opiniones y sugerencias. Esta retroalimentación ayudará a mejorar la usabilidad, el contenido y las opciones de interacción y de compartir, con el objetivo de optimizar la experiencia de la aplicación en futuras versiones.
 
 ## Funcionalidades Principales
 
@@ -8,13 +8,39 @@ Este proyecto es una aplicación móvil desarrollada en Flutter para gestionar, 
 
 *Crear y editar recetas: Los usuarios pueden agregar nuevas recetas o editar las existentes, personalizando los ingredientes y pasos.
 
-*Gestionar favoritos: Se puede guardar y consultar una lista de recetas favoritas.
+*Comentarios: Una seccion donde le usuario te otorgara informacion de que cosas faltan para mejorar la app o si es que ya esta bien.
 
-*Comentarios y valoraciones: Posibilidad de comentar y calificar las recetas.
+*Pantalla de inicio: La aplicación cuenta con una pantalla de carga personalizada para mostar una receta al azar, ademas de mostrar todas las recetas que se estan preparando.
 
-*Pantalla de inicio personalizada: La aplicación cuenta con una pantalla de carga personalizada para mejorar la experiencia del usuario.
+## Dependencias Utilizadas
+
+Este proyecto utiliza las siguientes dependencias principales:
+
+*flutter_native_splash: Para configurar una pantalla de inicio personalizada.
+
+*sqflite: Para la integración de bases de datos SQLite en Flutter, lo que permite almacenar y gestionar datos localmente en la aplicación.
+
+*camera: Proporciona acceso a la cámara del dispositivo para capturar fotos y videos directamente desde la aplicación.
+
+*path: Facilita el manejo y manipulación de rutas de archivos, útil para definir y acceder a rutas en diferentes plataformas.
+
+*path_provider: Permite obtener rutas a directorios específicos del sistema de archivos, como directorios de documentos o de caché, adaptándose según el sistema operativo.
+
+*flutter_native_splash: Configura una pantalla de inicio personalizada (splash screen) que se muestra mientras la aplicación se carga.
+
+*flutter_launcher_icons: Permite personalizar el ícono de la aplicación para todas las plataformas compatibles.
+
+*flutter_email_sender: Facilita el envío de correos electrónicos desde la aplicación, utilizando el cliente de correo del dispositivo.
+
+*share_plus: Proporciona opciones para compartir texto, imágenes y archivos desde la aplicación a través de otras aplicaciones en el dispositivo.
+
+*permission_handler: Gestiona y solicita permisos específicos, como acceso a la cámara o la galería, necesarios para el funcionamiento de la aplicación.
+
+Puedes revisar más dependencias en el archivo pubspec.yaml.
 
 ## Instalación
+
+caso 1:
 
 1 Clona el repositorio: git clone https://github.com/tu_usuario/team_mokup.git
 
@@ -24,37 +50,20 @@ Este proyecto es una aplicación móvil desarrollada en Flutter para gestionar, 
 
 4 Ejecuta la aplicación: flutter run
 
-## Dependencias Utilizadas
+caso 2: 
 
-Este proyecto utiliza las siguientes dependencias principales:
+1 Busca el build del APK que está en esta ubicación: TeamMokUP\team_mokup\build\app\outputs\flutter-apk\Team_Mokup.apk.
 
-*flutter_native_splash: Para configurar una pantalla de inicio personalizada.
+2 Toma el archivo Team_Mokup.apk y pásalo a tu celular.
 
-*cupertino_icons: Para íconos con estilo iOS en la aplicación.
+3 Instala el APK en el celular.
 
-Puedes revisar más dependencias en el archivo pubspec.yaml.
+## video de desarrollador 
 
-## Configuración de Splash Screen
+link: 
 
-La pantalla de inicio de la aplicación se configura con la siguiente sección en el archivo pubspec.yaml:
+## pruebas de usuario
 
-flutter_native_splash:
-  color: "#FFFFFF"
-  color_dark: "#272727"
-  image: assets/logos/logodos.png
-  image_dark: assets/logos/logodos.png
-  android_12:
-    color: "#FFFFFF"
-    color_dark: "#272727"
-    image: assets/logos/logodos.png
-
-Este archivo permite personalizar tanto la pantalla de inicio para temas claros como oscuros.
-
-assets/
-├── logos            # Contiene las imagenes en png de los logos
-|
-lib/
-├── models/          # Contiene las clases para Receta, Usuario, Comentario
-├── pages/           # Las pantallas principales de la aplicación (recetas, comentarios, etc.)
+link: https://docs.google.com/spreadsheets/d/1ZKVOMS57Nd8bodySQTNXs5uur4JED2Va4OcwxfBgHBg/edit?usp=sharing
 
 

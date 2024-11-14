@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:team_mokup/models/receta.dart';
-import 'package:team_mokup/pages/crearReceta.dart';
+import 'package:team_mokup/models/dataBaseHelper.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:path/path.dart' as path;
+import 'package:team_mokup/pages/editarReceta.dart';
 
 class recetasWeb extends StatefulWidget {
   const recetasWeb({super.key, required this.title, required this.color});
@@ -13,41 +20,111 @@ class recetasWeb extends StatefulWidget {
 }
 
 class _recetasWebState extends State<recetasWeb> {
-  // Lista de recetas originales y lista filtrada
-  final List<Receta> recetasOriginales = [
-    Receta(
-      nombre: 'Café Espresso',
-      ingredientes: 'Café molido fino, Agua',
-      preparacion: 'Utiliza una máquina de espresso para extraer el café con agua caliente a alta presión durante 25-30 segundos.',
-      productosAsociados: '',
-      isMine: false,
-      imagen: 'assets/image/descarga.png', // Ruta de la imagen
-    ),
-    Receta(
-      nombre: 'Café Americano',
-      ingredientes: 'Café espresso, Agua caliente',
-      preparacion: 'Prepara un espresso y añade agua caliente para diluir, creando una bebida más suave.',
-      productosAsociados: '',
-      isMine: false,
-      imagen: 'assets/image/descarga2.png', // Ruta de la imagen
-    ),
-    Receta(
-      nombre: 'Café Cold Brew',
-      ingredientes: 'Café molido grueso, Agua fría',
-      preparacion: 'Mezcla el café con agua fría y déjalo reposar en el refrigerador durante 12-24 horas. Luego filtra el café y sirve con hielo.',
-      productosAsociados: '',
-      isMine: false,
-      imagen: 'assets/image/descarga.png', // Ruta de la imagen
-    ),
-  ];
-
   List<Receta> recetasFiltradas = [];
   final TextEditingController _searchController = TextEditingController();
+  final dbHelper = DatabaseHelper();
 
   @override
   void initState() {
     super.initState();
-    recetasFiltradas = List.from(recetasOriginales); // Inicializar recetasFiltradas
+    _cargarRecetas();
+  }
+
+  Future<void> _cargarRecetas() async {
+    final recetas = await dbHelper.getAllRecetas();
+    setState(() {
+      recetasFiltradas = recetas;
+    });
+  }
+
+  Future<void> _eliminarBaseDeDatos() async {
+    await dbHelper.deleteDatabaseFile();
+    setState(() {
+      recetasFiltradas.clear();
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Base de datos eliminada")),
+    );
+  }
+
+  Future<void> _shareRecipe(Receta receta) async {
+    String recipeText = '''
+      Receta: ${receta.nombre}
+      
+      Ingredientes: 
+      ${receta.ingredientes}
+      
+      Preparación: 
+      ${receta.preparacion}
+      
+      Productos relacionados: 
+      ${receta.productosAsociados}
+      '''; 
+
+    List<XFile> files = [];
+
+    if (receta.imagen != null) {
+      final String imagePath = receta.imagen!;
+
+      if (imagePath.startsWith('assets/')) {
+        final ByteData byteData = await rootBundle.load(imagePath);
+        final tempDir = await getTemporaryDirectory();
+        final filePath = path.join(tempDir.path, path.basename(imagePath));
+        final file = File(filePath);
+        await file.writeAsBytes(byteData.buffer.asUint8List());
+        files.add(XFile(filePath));
+      } else {
+        files.add(XFile(imagePath));
+      }
+    }
+
+    if (files.isNotEmpty) {
+      await Share.shareXFiles(files, text: recipeText);
+    } else {
+      await Share.share(recipeText);
+    }
+  }
+
+  Future<void> _editRecipe(Receta receta) async {
+    final editedReceta = await showDialog<Receta>( 
+      context: context,
+      builder: (context) {
+        return EditRecipeDialog(receta: receta);
+      },
+    );
+
+    if (editedReceta != null) {
+      editedReceta.isMine = true;
+      await dbHelper.updateReceta(editedReceta);
+      _cargarRecetas();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Receta actualizada")),
+      );
+    }
+  }
+
+  // Método para alternar el estado de inProduction
+  Future<void> _toggleInProduction(Receta receta) async {
+  // Alternar el valor de 'inProduction'
+    receta.inProduction = !(receta.inProduction ?? false);
+
+    // Si está en producción (receta.inProduction es true), incrementamos el contador
+    if (receta.inProduction == true) {
+      receta.conteo = (receta.conteo ) + 1;  // Aseguramos que conteo no sea null
+    }
+
+    // Actualizar la receta en la base de datos
+    await dbHelper.updateReceta(receta);
+
+    // Volver a cargar las recetas para reflejar los cambios
+    _cargarRecetas();
+  }
+
+  // Función para verificar si un archivo existe en el sistema de archivos
+  Future<bool> _existeArchivo(String? pathImagen) async {
+    if (pathImagen == null) return false;
+    final file = File(pathImagen);
+    return file.exists();
   }
 
   @override
@@ -61,7 +138,6 @@ class _recetasWebState extends State<recetasWeb> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Campo de búsqueda
             TextField(
               controller: _searchController,
               decoration: const InputDecoration(
@@ -70,16 +146,21 @@ class _recetasWebState extends State<recetasWeb> {
               ),
               onChanged: (value) {
                 setState(() {
-                  recetasFiltradas = recetasOriginales
-                      .where((receta) => receta.nombre.toLowerCase().contains(value.toLowerCase()))
-                      .toList();
+                  if (value.isEmpty) {
+                    // Si el texto está vacío, recargar todas las recetas
+                    _cargarRecetas();
+                  } else {
+                    // Filtrar las recetas según el valor de búsqueda
+                    recetasFiltradas = recetasFiltradas
+                        .where((receta) => receta.nombre.toLowerCase().contains(value.toLowerCase()))
+                        .toList();
+                  }
                 });
               },
             ),
-            const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
-                itemCount: recetasFiltradas.length, // Mostrar recetas filtradas
+                itemCount: recetasFiltradas.length,
                 itemBuilder: (context, index) {
                   final receta = recetasFiltradas[index];
                   return Card(
@@ -93,21 +174,41 @@ class _recetasWebState extends State<recetasWeb> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Mostrar imagen de la receta
                           receta.imagen != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.asset(
-                                    receta.imagen!,
-                                    height: 300,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover, // Ajusta la imagen para cubrir el espacio
-                                  ),
-                                )
-                              : const SizedBox(height: 150), // Si no tiene imagen, mostrar espacio vacío
+                              ? (receta.imagen!.startsWith('assets/')
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.asset(
+                                        receta.imagen!,  // Usamos Image.asset para las imágenes de pubspec.yaml
+                                        height: 300,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : FutureBuilder<bool>(
+                                      future: _existeArchivo(receta.imagen),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                          return const Center(child: CircularProgressIndicator());
+                                        }
 
+                                        if (snapshot.data == true) {
+                                          return ClipRRect(
+                                            borderRadius: BorderRadius.circular(10),
+                                            child: Image.file(
+                                              File(receta.imagen!),
+                                              height: 300,
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          );
+                                        } else {
+                                          return const SizedBox(height: 150);
+                                        }
+                                      },
+                                    ))
+                              : const SizedBox(height: 150),
                           const SizedBox(height: 10),
-                          // Nombre de la receta
                           Text(
                             receta.nombre,
                             style: const TextStyle(
@@ -116,46 +217,49 @@ class _recetasWebState extends State<recetasWeb> {
                             ),
                           ),
                           const SizedBox(height: 5),
-                          // Ingredientes y preparación
                           Text('Ingredientes: ${receta.ingredientes}'),
                           const SizedBox(height: 5),
                           Text('Preparación: ${receta.preparacion}'),
                           const SizedBox(height: 10),
+                          Text('Productos relacionados: ${receta.productosAsociados}'),
+                          const SizedBox(height: 10),
+                          // Agregar el conteo junto a los iconos
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Espaciador flexible
-                              const Spacer(),
-                              // Iconos de compartir y editar
-                              Column(
+                              // Los íconos
+                              Row(
                                 children: [
                                   IconButton(
-                                    icon: const Icon(Icons.share),
-                                    onPressed: () {
-                                      // Implementar la lógica para compartir
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () async {
+                                      await _editRecipe(receta);
                                     },
                                   ),
-                                  // Mostrar botón de editar solo para recetas del usuario
-                                  if (receta.isMine)
-                                    IconButton(
-                                      icon: const Icon(Icons.edit),
-                                      onPressed: () async {
-                                        final recetaEditada = await Navigator.push<Receta>(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => CrearReceta(receta: receta),
-                                          ),
-                                        );
-                                        if (recetaEditada != null) {
-                                          setState(() {
-                                            // Actualizar la receta editada en la lista
-                                            final index = recetasFiltradas.indexOf(receta);
-                                            recetasFiltradas[index] = recetaEditada;
-                                          });
-                                        }
-                                      },
+                                  IconButton(
+                                    icon: const Icon(Icons.share),
+                                    onPressed: () async {
+                                      await _shareRecipe(receta);
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.local_cafe,
+                                      color: (receta.inProduction ?? false) ? Colors.black : Colors.grey, // Aseguramos que inProduction no sea null
                                     ),
+                                    onPressed: () async {
+                                      // Alternar el valor de inProduction al presionar el ícono
+                                      await _toggleInProduction(receta);
+                                    },
+                                  ),
                                 ],
+                              ),
+                              // Conteo de veces preparado
+                              Text(
+                                'Veces preparado: ${receta.conteo}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ],
                           ),
@@ -166,30 +270,10 @@ class _recetasWebState extends State<recetasWeb> {
                 },
               ),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                // Navegar a la página para crear una nueva receta y esperar el resultado
-                final nuevaReceta = await Navigator.push<Receta>(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CrearReceta(),
-                  ),
-                );
-
-                // Agregar la nueva receta y actualizar la vista
-                if (nuevaReceta != null) {
-                  setState(() {
-                    recetasOriginales.add(nuevaReceta);
-                    recetasFiltradas = List.from(recetasOriginales);
-                  });
-                }
-              },
-              child: const Text('Crear nueva receta'),
-            ),
           ],
         ),
       ),
+      
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:team_mokup/pages/comentarios.dart';
+import 'package:team_mokup/pages/home.dart';
+import 'package:team_mokup/pages/opinion.dart';
 import 'package:team_mokup/pages/misRecetas.dart';
 import 'package:team_mokup/pages/recetas.dart';
 
@@ -20,9 +21,10 @@ int _selectedIndex = 0; // Índice seleccionado para las páginas
 
   // Lista de las páginas que quieres mostrar
   static const List<Widget> _pages = <Widget>[
+    home(title: "Menu Principal", color: Color.fromARGB(255, 168, 71, 36)),
     recetasWeb(title: 'Recetas',color:Color.fromARGB(255, 181, 130, 111)),
-    MisRecetas(title: 'Mis Recetas', color: Color.fromARGB(255, 255, 138, 130)),
-    Comentario(title: "Comentario", color: Color.fromARGB(255, 255, 246, 165))
+    MisRecetas(title: 'Mis Recetas', color: Color.fromARGB(255, 253, 142, 78)),
+    Opinion(title: "Comentario", color: Color.fromARGB(255, 253, 231, 107))
   ];
 
   void _onItemTapped(int index) {
@@ -41,21 +43,25 @@ int _selectedIndex = 0; // Índice seleccionado para las páginas
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.shifting, // Cambiar el tipo a shifting
         items: const <BottomNavigationBarItem>[
-          
+          BottomNavigationBarItem(
+            icon: Icon(Icons.house_outlined),
+            label: 'Casa',
+            backgroundColor: Color.fromARGB(255, 168, 71, 36),
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book),
             label: 'Recetas',
             backgroundColor: Color.fromARGB(255, 181, 130, 111),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
+            icon: Icon(Icons.coffee_maker),
             label: 'Mis Creaciones',
-            backgroundColor: Color.fromARGB(255, 255, 138, 130),
+            backgroundColor: Color.fromARGB(255, 253, 142, 78),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.forum),
-            label: 'Comentarios',
-            backgroundColor: Color.fromARGB(255, 255, 246, 165),
+            icon: Icon(Icons.rate_review),
+            label: 'Comentario',
+            backgroundColor: Color.fromARGB(255, 253, 231, 107),
           ),
           
         ],

@@ -3,10 +3,11 @@ flutter_launcher_icons:
   image_path: "assets/logos/logodos.png"
 
   android: "launcher_icon"
-  image_path_android: "assets/logos/logodos.png"
+  image_path_android: "assets/logos/final_logo.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/logos/logodos.png"
+  adaptive_icon_foreground: "assets/logos/final_logo.png"
+  icon_size: 10 # min:48, max:256, default: 48
   # adaptive_icon_monochrome: "assets/icon/monochrome.png"
 
   ios: false
@@ -18,15 +19,15 @@ flutter_launcher_icons:
 
   web:
     generate: true
-    image_path: assets\logos\logodos.png
-    background_color: assets\logos\logodos.png
-    theme_color: assets\logos\logodos.png
+    image_path: "assets/logos/final_logo.png"
+    background_color: "assets/logos/final_logo.png"
+    theme_color: "assets/logos/final_logo.png"
 
   windows:
     generate: true
-    image_path: "path/to/image.png"
+    image_path: "assets/logos/final_logo.png"
     icon_size: 48 # min:48, max:256, default: 48
 
   macos:
     generate: true
-    image_path: "path/to/image.png"
+    image_path: "assets/logos/final_logo.png"
