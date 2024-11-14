@@ -52,15 +52,20 @@ caso 1:
 
 caso 2: 
 
-1 Busca el build del APK que está en esta ubicación: TeamMokUP\team_mokup\build\app\outputs\flutter-apk\Team_Mokup.apk.
+1 Busca el build del APK que está en esta ubicación: team_mokup\build\app\outputs\flutter-apk\Team_Mokup.apk.
 
 2 Toma el archivo Team_Mokup.apk y pásalo a tu celular.
 
 3 Instala el APK en el celular.
 
+## diagramas
+
+ruta de Diagrama de flujo - Registro de una Receta: team_mokup\Diagrama de flujo - Registro de una Receta.png
+ruta de Diagrama de arquitectura de información: team_mokup\Diagrama en arquitectura de información.png
+
 ## video de desarrollador 
 
-link: 
+link: https://youtu.be/05FXDBAwrRg
 
 ## pruebas de usuario
 
